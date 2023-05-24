@@ -57,7 +57,7 @@ class Conta {
 
 }
 
-//SUBCLASSE ESTUDANTIL
+//SUBCLASSE POUPANÇA
 class poupanca extends Conta{
     constructor(numero, cpf, saldo,ativo, diaAniversarioConta){
         super(numero,cpf,saldo,ativo,diaAniversarioConta);
@@ -65,13 +65,48 @@ class poupanca extends Conta{
     }
 
     correcao(dia){
-        console.log("Aplicando correção")
+        console.log("Aplicando correção...")
+        if(this.diaAniversarioConta){
+            this.saldo = (this.saldo * 0.05)+this.saldo
+            console.log("Sua conta foi devidamente corrigida!")
+        }else{
+            console.log("Podemos identificar que essa não é a data de correção")
+        }
     }
 }
 
+
+if (tipo=="1"){
+    console.log("CONTA POUPANÇA")
+    let numero = parseInt(leia("Digite o número da conta: "))
+    let cpf = leia("Digite o cpf: ")
+    let diaAniversarioConta = leia("Digite o dia : ") 
+    let dia = leia("Digite o dia atual: ") 
+    let cp = new poupanca(numero,cpf,0,false,diaAniversarioConta,dia)
+    cp.ativar()
+
+
+    for (let x=1; x<=10; x++){
+        console.log("MOVIMENTO "+x)
+        console.log(`Saldo atual da conta R\$ : ${cp.saldo}`)
+        valor = parseInt(leia("Digite o valor que desejar remover ou inserir: "))
+        op = leia("Digite D para débito ou C para crédito: : ").toUpperCase()
+        if(op=="C"|| op =="c"){
+            cp.credito(valor)
+        }
+        else if (op=="D"|| op =="d"){
+            cp.debito(valor)
+        }
+}
+console.log(cp.correcao(dia))
+console.log("Saldo final R$: "+cp.saldo)
+}
+
+
+//SUBCLASSE CORRENTE 
 class Corrente extends Conta {
-    constructor(numero, cpf, saldo, contadorTalao) {
-      super(numero, cpf, saldo);
+    constructor(numero, cpf, saldo,ativa, contadorTalao) {
+      super(numero, cpf, saldo,ativa);
       this.contadorTalao = contadorTalao;
       this.quantidadeTaloes = 0;
     }
@@ -80,27 +115,111 @@ class Corrente extends Conta {
       if (this.quantidadeTaloes < 3) {
         this.saldo -= 30; // Debite R$ 30 do saldo para o talão
         this.quantidadeTaloes++;
-        console.log("Seu cheque foi solicitado com sucesso!");
-      } else {
-        console.log("Limite máximo de cheques atingido!");
-      }
+        console.log("Seu talão foi solicitado com sucesso!");
+      } 
+      
+      if(this.contadorTalao == 3){
+            console.log("Você já atingiu o limite de 3 talões");
+        } else if(this.saldo < 30){
+            console.log("Saldo insuficiente para solicitar talão")
+        } else {
+            this.debito(30);
+            console.log("Saldo: "+this.saldo )
+            this.contadorTalao++
+        }
     }
   }
 
-class Especial extends Conta{
-    constructor(numero, cpf, saldo,ativo, limite){
-        super(numero,cpf,saldo,ativo);
-        this.limite = limite
-    }
 
-    usarLimite(valor){
-       console.log("usando limite")
+  if (tipo=="2"){
+    console.log("CONTA CORRENTE")
+    let numero = parseInt(leia("Digite o número da conta: "))
+    let cpf = leia("Digite o cpf: ")
+    let pedir=""
+    const co1 = new Corrente(numero, cpf, 0, false, 0)
+    co1.ativar()
+  }
+
+  for( let x = 1; x <= 10; x++){
+    console.log("MOVIMENTO: "+ x)
+    console.log("Saldo atual da conta: " + co1.saldo)
+
+    op = leia("Digite D para débito ou C para crédito: ")
+    if(op == "D" || op =="d"){
+        valor = parseInt(leia("Digite o valor para debito: "))
+        co1.debito(valor)
+    } else if(op == "C" || op =="c"){
+        valor = parseInt(leia("Digite o valor para credito: "))
+        co1.credito(valor)
+    }o
+    console.log("Saldo atual da conta: " + co1.saldo)
+
+    if(x == 10){
+        pedir = leia("Gostaria de solicitar um talão? (S/N) ");
+        if(pedir == "S" || pedir == "s"){
+            co1.pediTalao();
+        }
     }
 }
 
 
 
 
+
+//CONTA ESPECIAL
+class Especial extends Conta{
+    constructor(numero, cpf, saldo,ativo, limite){
+        super(numero,cpf,saldo,ativo);
+        this.limite = limite
+    }
+    usarLimite(valor){
+       console.log("usando limite")
+       if(this.ativo){
+        if(valor < 0){
+            console.log("Impossível realizar, valor negativo")
+        } 
+        else if(valor==0){
+            console.log("Impossível realizar, valor zerado")
+        }
+        else if (valor > this.saldo + this.limite) {
+            console.log("Impossível realizar, saldo e limite indisponíveis");
+          } 
+          else if(valor >(this.saldo + this.limite)){
+            console.log("Impossível realizar, sem valor no limite e saldo...")
+        }
+          else {
+            if (valor > this.saldo) {
+              const saldoRemanente = valor - this.saldo;
+              this.saldo = 0;
+              this.limite -= saldoRemanente;
+            } else {
+              this.saldo -= valor;
+            }
+          }
+        } else {
+          console.log("Conta inativa...");
+
+       }
+    }
+}
+
+
+const ep = new Especial(numero, cpf, saldo, ativo, limite)
+
+  for (let x = 1; x <= 10; x++) {
+    console.log("CONTA ESPECIAL");
+    console.log("Saldo Atual: R$ " + ep.saldo)
+    const op = leia("MOVIMENTO - D - débito ou C - crédito: ")
+    const valor = parseFloat(leia("Valor do movimento: R$ "))
+
+    if (op == "D"|| op=="d") {
+      ep.debito(valor)
+    } else if (op == "C"|| op=="c") {
+      ep.credito(valor)
+    }
+  }console.log("Limite atual da conta: R$" +ep.limite)
+  console.log("Saldo final da conta: R$" +ep.saldo)
+   
 
 
 
@@ -208,9 +327,9 @@ let numero = parseInt(leia("Digite o número da conta: "))
 let cpf = leia("Digite o cpf da conta: ")
 let c1 = new Conta(numero, cpf, 0, false)
 let op=""
-
 let valor = 0
-// c1.ativar()
+
+//c1.ativar()
 // for (let x=1; x<=10;x++){
 //     console.log("Movimento: "+x)
 
@@ -226,4 +345,4 @@ let valor = 0
 // }
 // console.log("Saldo atual da conta: "+c1.saldo)
 
-//montando menu
+
