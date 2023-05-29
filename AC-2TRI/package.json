@@ -1,0 +1,33 @@
+{
+  "produtos": [
+  {
+  "id": 1,
+  "descricao": "Lancôme",
+  "estoque": 20,
+  "valor": 270.00,
+  "imagem": "img/lancome2.jpg"
+  },
+  {
+  "id": 2,
+  "descricao": "Libre",
+  "estoque": 10,
+  "valor": 650.00,
+  "imagem": "img/libre1.jpg"
+  },
+  {
+  "id": 3,
+  "descricao": "Floratta Red",
+  "estoque": 50,
+  "valor": 120.00,
+  "imagem": "img/floratta1.jpg"
+  },
+  {
+    "id": 4,
+    "descricao": "Malbec",
+    "estoque": 45,
+    "valor": 209.00,
+    "imagem": "img/malbec1.jpg"
+    }
+  ]
+}
+ 
